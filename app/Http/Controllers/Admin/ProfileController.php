@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 
 use App\Profile;
 
+use App\Profile_History;
+
+use Carbon\Carbon;
+
 class ProfileController extends Controller
 {
     //add, create, edit, updateを追加
@@ -52,9 +56,15 @@ class ProfileController extends Controller
      $profile = Profile::find($request->id);
      //送信されてきたフォームデータを格納
      $profile_form = $request->all();
-    
+     
     //該当するデータを上書きして保存
     $news->fill($profile_form)->save();
+    
+    //以下追記
+    $profile_history = new Profile_History;
+    $profile_history->profile_id = $profile->id;
+    $profile_history->edited_at = Carbon::now();
+    $profile_history->save();
     
      return redirect('admin/profile/');
     }
